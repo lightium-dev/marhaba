@@ -1,5 +1,7 @@
 const logger = (req, res, next) => {
-  console.log(`${req.method} ${req.url} - ${new Date().toISOString()}`);
+  const timestamp = new Date().toISOString();
+  console.log(`[${timestamp}] ${req.method} ${req.originalUrl}`);
   next();
 };
+
 module.exports = logger;

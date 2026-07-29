@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 require('dotenv').config();
-const authMiddleware = async (req, res, next) => {
+const authenticate = async (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({ error: 'Unauthorized' });
@@ -12,13 +12,15 @@ const authMiddleware = async (req, res, next) => {
     const user = await User.findByPk(decoded.id, {
       attributes: { exclude: ['password'] },
     });
+
     if (!user) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
+
     req.user = user;
     next();
   } catch (err) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 };
-module.exports = authMiddleware;
+module.exports = authenticate;

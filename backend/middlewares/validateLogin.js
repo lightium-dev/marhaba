@@ -1,15 +1,18 @@
+const { z } = require("zod");
+
+const loginSchema = z.object({
+  email: z.string().email("Email invalide"),
+  password: z.string().min(1, "Le mot de passe est requis"),
+});
+
 const validateLogin = (req, res, next) => {
-  const { email, password } = req.body;
+  const result = loginSchema.safeParse(req.body);
 
-  if (!email || !password) {
-    return res.status(400).json({ error: "Email and password are required." });
+  if (!result.success) {
+    return res.status(400).json({ error: result.error.issues[0].message });
   }
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    return res.status(400).json({ error: "Invalid email format." });
-  }
-
+  req.body = result.data;
   next();
 };
 
