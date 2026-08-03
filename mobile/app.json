@@ -1,0 +1,16 @@
+{
+  "expo": {
+    "name": "Marhba",
+    "slug": "marhba-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "scheme": "marhba",
+    "plugins": [
+      "expo-router"
+    ],
+    "ios": {
+      "supportsTablet": true
+    }
+  }
+}
