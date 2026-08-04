@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Stack, useRouter, useSegments } from 'expo-router';
+import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { View, ActivityIndicator, Text, StyleSheet } from 'react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -9,24 +9,10 @@ const queryClient = new QueryClient();
 
 function InitialLayout() {
   const { isAuthenticated, isLoading, restoreSession } = useAuthStore();
-  const segments = useSegments();
-  const router = useRouter();
 
   useEffect(() => {
     restoreSession();
   }, []);
-
-  useEffect(() => {
-    if (isLoading) return;
-
-    const inAuthGroup = segments[0] === '(auth)';
-
-    if (!isAuthenticated && !inAuthGroup) {
-      router.replace('/(auth)/login');
-    } else if (isAuthenticated && inAuthGroup) {
-      router.replace('/(app)/home');
-    }
-  }, [isAuthenticated, isLoading, segments]);
 
   if (isLoading) {
     return (
@@ -43,7 +29,14 @@ function InitialLayout() {
   return (
     <>
       <StatusBar style="dark" />
-      <Stack screenOptions={{ headerShown: false }} />
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Protected guard={!isAuthenticated}>
+          <Stack.Screen name="(auth)" />
+        </Stack.Protected>
+        <Stack.Protected guard={isAuthenticated}>
+          <Stack.Screen name="(app)" />
+        </Stack.Protected>
+      </Stack>
     </>
   );
 }
@@ -69,7 +62,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: '#0058bc',
     alignItems: 'center',
-    justify: 'center',
+    justifyContent: 'center',
     marginBottom: 12,
   },
   logoText: {

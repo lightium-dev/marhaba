@@ -1,9 +1,9 @@
+require('dotenv').config();
 const express = require('express');
 const sequelize = require('./config/db');
 const logger = require('./middlewares/logger');
 const errorHandler = require('./middlewares/errorHandler');
 const authRoutes = require('./routes/authRoutes');
-require('dotenv').config();
 
 const app = express();
 
